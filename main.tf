@@ -58,30 +58,30 @@ data "aws_subnets" "default" {
 # You can use this security group ID in the vpc_security_group_ids argument of the
 # aws_instance as follows:
 #     data.aws_ami.ubuntu_linux.id
-resource "aws_instance" "example" {
-  ami           = data.aws_ami.ubuntu_linux.id
-  instance_type = "t2.micro"
-  # tell the EC2 instance to use the security group we created below
-  vpc_security_group_ids = [aws_security_group.instance.id]
+# resource "aws_instance" "example" {
+#   ami           = data.aws_ami.ubuntu_linux.id
+#   instance_type = "t2.micro"
+#   # tell the EC2 instance to use the security group we created below
+#   vpc_security_group_ids = [aws_security_group.instance.id]
 
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello, World" > index.html
-              nohup busybox httpd -f -p ${var.server_port} &
-              EOF
+#   user_data = <<-EOF
+#               #!/bin/bash
+#               echo "Hello, World" > index.html
+#               nohup busybox httpd -f -p ${var.server_port} &
+#               EOF
 
-  # when you change the user_data parameter and run apply, Terraform will terminate the
-  # original instance and launch a totally new one. Terraform’s default behavior is to
-  # update the original instance in place, but since User Data runs only on the very
-  # first boot, and your original instance already went through that boot process, you
-  # need to force the creation of a new instance to ensure your new User Data script
-  # actually gets executed.
-  user_data_replace_on_change = true
+#   # when you change the user_data parameter and run apply, Terraform will terminate the
+#   # original instance and launch a totally new one. Terraform’s default behavior is to
+#   # update the original instance in place, but since User Data runs only on the very
+#   # first boot, and your original instance already went through that boot process, you
+#   # need to force the creation of a new instance to ensure your new User Data script
+#   # actually gets executed.
+#   user_data_replace_on_change = true
 
-  tags = {
-    Name = "terraform-example"
-  }
-}
+#   tags = {
+#     Name = "terraform-example"
+#   }
+# }
 
 # To allow the EC2 instance to receive traffic on port 8080, we need to create a security 
 # group and add an ingress rule to allow traffic on port 8080.
