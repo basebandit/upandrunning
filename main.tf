@@ -9,7 +9,7 @@ provider "aws" {
 // Type: instance
 // Name: web
 // Config: ami consists of one or more values
-data "aws_ami" "amazon_linux" {
+data "aws_ami" "ubuntu_linux" {
   most_recent = true
 
   filter {
@@ -57,9 +57,9 @@ data "aws_subnets" "default" {
 # aws_security_group.instance.id
 # You can use this security group ID in the vpc_security_group_ids argument of the
 # aws_instance as follows:
-#     data.aws_ami.amazon_linux.id
+#     data.aws_ami.ubuntu_linux.id
 resource "aws_instance" "example" {
-  ami           = data.aws_ami.amazon_linux.id
+  ami           = data.aws_ami.ubuntu_linux.id
   instance_type = "t2.micro"
   # tell the EC2 instance to use the security group we created below
   vpc_security_group_ids = [aws_security_group.instance.id]
@@ -105,7 +105,7 @@ resource "aws_security_group" "instance" {
 # which specifies how to configure each EC2 Instance in the ASG.15 The aws_launch_configuration 
 # resource uses almost the same parameters as the aws_instance resource, although it doesn’t support tags
 resource "aws_launch_configuration" "example" {
-  image_id        = data.aws_ami.amazon_linux.id
+  image_id        = data.aws_ami.ubuntu_linux.id
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.instance.id]
 
@@ -142,8 +142,9 @@ resource "aws_autoscaling_group" "example" {
   target_group_arns = [aws_lb_target_group.asg.arn]
   health_check_type = "ELB"
 
-  max_size = 10
-  min_size = 2
+  desired_capacity = 2
+  max_size         = 10
+  min_size         = 2
 
   tag {
     key                 = "Name"
