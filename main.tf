@@ -230,12 +230,12 @@ resource "aws_lb_target_group" "asg" {
 # Tie all these pieces together by creating listener rules using the aws_lb_listener_rule resource. 
 # The below resource code adds a listener rule that sends requests that match any 
 # path to the target group that contains your ASG.
-resource "aws_lb_listener_rule" "asg"{
+resource "aws_lb_listener_rule" "asg" {
   listener_arn = aws_lb_listener.http.arn
   priority     = 100
 
-  condition = {
-    path_pattern = {
+  condition {
+    path_pattern {
       values = ["*"]
     }
   }
